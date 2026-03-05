@@ -12,8 +12,8 @@ echo "net.netfilter.nf_conntrack_max = 655535" >> package/base-files/files/etc/s
 ##自发布时最新版
 echo "更新sing-box"
 # 自动识别并替换 PKG_VERSION 和 PKG_HASH
-sed -i -E 's/(PKG_VERSION:=)[^ ]+/\1 1.13.1-beta.2/' feeds/packages/net/sing-box/Makefile
-sed -i -E 's|(PKG_HASH:=)[^ ]+|\1 23971979c3e6423e495bda88a0df665da84fc65e085ddfcbe368eb6d111c35d7|' feeds/packages/net/sing-box/Makefile
+sed -i -E 's/(PKG_VERSION:=)[^ ]+/\1 1.13.1/' feeds/packages/net/sing-box/Makefile
+sed -i -E 's|(PKG_HASH:=)[^ ]+|\1 62624d4c11e318606b0dc181d1da4b2b4d7e110f67c6fb15e1ba14bb88377f69|' feeds/packages/net/sing-box/Makefile
 
 # 修改 xray-core 包中的 PKG_VERSION 和 PKG_HASH
 echo "更新xray-core"
@@ -78,3 +78,50 @@ echo "覆盖 v2ray-geodata Makefile 为 xiaojing110/openwrt-TD 版本"
 curl -s -o feeds/packages/net/v2ray-geodata/Makefile https://raw.githubusercontent.com/xiaojing110/openwrt-TD/dev/Makefile
 # 可选：显示版本信息确认
 grep "GEOIP_VER:=" feeds/packages/net/v2ray-geodata/Makefile || echo "v2ray-geodata Makefile 更新失败"
+
+# ------------------ 替换 luci-app-passwall ------------------
+echo "开始替换 luci-app-passwall 为 Openwrt-Passwall 官方版本..."
+
+# 先删除旧的（如果存在）
+if [ -d "feeds/luci/applications/luci-app-passwall" ]; then
+    echo "删除旧的 luci-app-passwall 目录..."
+    rm -rf feeds/luci/applications/luci-app-passwall
+fi
+
+# 进入 feeds/luci/applications
+cd feeds/luci/applications || { echo "错误：无法进入 feeds/luci/applications"; exit 1; }
+
+# 克隆（浅克隆 + 单分支，节省时间）
+echo "克隆 Openwrt-Passwall/openwrt-passwall 仓库（浅克隆）..."
+git clone --depth=1 --single-branch --branch main \
+    https://github.com/Openwrt-Passwall/openwrt-passwall.git temp-passwall || {
+    echo "克隆失败，请检查网络或仓库是否可用"; exit 1;
+}
+
+cd temp-passwall || { echo "进入 temp-passwall 失败"; exit 1; }
+
+# 启用 sparse-checkout 并只拉取 luci-app-passwall 目录
+echo "启用 sparse-checkout 并设置只拉取 luci-app-passwall..."
+git sparse-checkout init --cone
+git sparse-checkout set luci-app-passwall
+
+# 移动到正确位置
+echo "移动 luci-app-passwall 到 feeds/luci/applications..."
+mv luci-app-passwall ../ || { echo "移动失败"; exit 1; }
+
+# 清理临时目录
+cd ..
+rm -rf temp-passwall
+
+echo "luci-app-passwall 替换完成！"
+
+# 可选：显示版本信息，便于确认
+if [ -f "luci-app-passwall/Makefile" ]; then
+    echo "替换后的版本信息："
+    grep -E "PKG_NAME|PKG_VERSION" luci-app-passwall/Makefile | head -n 4 || echo "未找到版本信息"
+else
+    echo "警告：Makefile 不存在，替换可能失败！"
+fi
+
+cd - >/dev/null  # 返回原来的目录
+echo "passwall 替换流程结束。"
