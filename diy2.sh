@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#非闭源使用
 #echo "修改 feeds.conf.default..."
 ##默认已增加
 #echo "src-git kenzo https://github.com/kenzok8/openwrt-packages" >> feeds.conf.default
