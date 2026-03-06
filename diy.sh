@@ -59,8 +59,8 @@ sed -i -E 's|(PKG_HASH:=)[^ ]+|\1 959496928c8a676ec8377f665ff6a19a707bfad693325f
 
 #6.12 内核
 echo "更新 kernel-6.12内核"
-sed -i 's|LINUX_VERSION-6.12 = .*|LINUX_VERSION-6.12 = .75|' include/kernel-6.12
-sed -i 's|LINUX_KERNEL_HASH-6.12.*|LINUX_KERNEL_HASH-6.12.75 = 06ee7927556ff1aa8810c4826501b0fdb169ebdc180644b882cf7c143ac1c177|' include/kernel-6.12
+sed -i 's|LINUX_VERSION-6.12 = .*|LINUX_VERSION-6.12 = .76|' include/kernel-6.12
+sed -i 's|LINUX_KERNEL_HASH-6.12.*|LINUX_KERNEL_HASH-6.12.76 = bbb43e834c46e6bd49a5c28f22e679a937443404e1f653204d4b24929f3ad896|' include/kernel-6.12
 
 # 修改 linux-firmware Makefile 中的 PKG_VERSION 和 PKG_HASH
 #echo "更新linux-firmware"
@@ -75,7 +75,7 @@ grep "PKG_VERSION:=" feeds/packages/net/chinadns-ng/Makefile || echo "chinadns-n
 
 # 覆盖 v2ray-geodata Makefile（来自 xiaojing110/openwrt-TD/dev 分支，主要是更新的 geoip/geosite 下载链接和哈希）
 echo "覆盖 v2ray-geodata Makefile 为 xiaojing110/openwrt-TD 版本"
-curl -s -o feeds/packages/net/v2ray-geodata/Makefile https://raw.githubusercontent.com/xiaojing110/openwrt-TD/dev/Makefile
+curl -s -o feeds/packages/net/v2ray-geodata/Makefile https://raw.githubusercontent.com/xiaojing110/openwrt-TD/main/Makefile
 # 可选：显示版本信息确认
 grep "GEOIP_VER:=" feeds/packages/net/v2ray-geodata/Makefile || echo "v2ray-geodata Makefile 更新失败"
 
