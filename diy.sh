@@ -59,8 +59,8 @@ sed -i -E 's|(PKG_HASH:=)[^ ]+|\1 959496928c8a676ec8377f665ff6a19a707bfad693325f
 
 #6.12 内核
 echo "更新 kernel-6.12内核"
-sed -i 's|LINUX_VERSION-6.12 = .*|LINUX_VERSION-6.12 = .75|' include/kernel-6.12
-sed -i 's|LINUX_KERNEL_HASH-6.12.*|LINUX_KERNEL_HASH-6.12.75 = 06ee7927556ff1aa8810c4826501b0fdb169ebdc180644b882cf7c143ac1c177|' include/kernel-6.12
+sed -i 's|LINUX_VERSION-6.12 = .*|LINUX_VERSION-6.12 = .76|' include/kernel-6.12
+sed -i 's|LINUX_KERNEL_HASH-6.12.*|LINUX_KERNEL_HASH-6.12.76 = bbb43e834c46e6bd49a5c28f22e679a937443404e1f653204d4b24929f3ad896|' include/kernel-6.12
 
 # 修改 linux-firmware Makefile 中的 PKG_VERSION 和 PKG_HASH
 #echo "更新linux-firmware"
