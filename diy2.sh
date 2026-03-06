@@ -81,7 +81,7 @@ grep "PKG_VERSION:=" feeds/packages/net/chinadns-ng/Makefile || echo "chinadns-n
 
 # 覆盖 v2ray-geodata Makefile（来自 xiaojing110/openwrt-TD/dev 分支，主要是更新的 geoip/geosite 下载链接和哈希）
 echo "覆盖 v2ray-geodata Makefile 为 xiaojing110/openwrt-TD 版本"
-curl -s -o feeds/packages/net/v2ray-geodata/Makefile https://raw.githubusercontent.com/xiaojing110/openwrt-TD/dev/Makefile
+curl -s -o feeds/packages/net/v2ray-geodata/Makefile https://raw.githubusercontent.com/xiaojing110/openwrt-TD/main/Makefile
 # 可选：显示版本信息确认
 grep "GEOIP_VER:=" feeds/packages/net/v2ray-geodata/Makefile || echo "v2ray-geodata Makefile 更新失败"
 
