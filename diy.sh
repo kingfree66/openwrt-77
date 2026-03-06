@@ -79,6 +79,10 @@ curl -s -o feeds/packages/net/v2ray-geodata/Makefile https://raw.githubuserconte
 # 可选：显示版本信息确认
 grep "GEOIP_VER:=" feeds/packages/net/v2ray-geodata/Makefile || echo "v2ray-geodata Makefile 更新失败"
 
+##以下功能按需打开,需要本地编译过带ofa配置的，不要就要修改启用
+#应用过滤
+#git clone https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter   
+
 # ------------------ 替换 luci-app-passwall ------------------
 echo "开始替换 luci-app-passwall 为 Openwrt-Passwall 官方版本..."
 
