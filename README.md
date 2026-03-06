@@ -25,9 +25,13 @@ rax3000m配置:https://raw.githubusercontent.com/xiaojing110/openwrt-TD/refs/hea
 
 X86默认(无需或者用自己的)：https://raw.githubusercontent.com/xiaojing110/openwrt-TD/refs/heads/main/X86/.config
 
+红米AX6000配置：https://raw.githubusercontent.com/xiaojing110/openwrt-TD/refs/heads/main/hmax6000/.config #开源固件
+
 默认diy：https://raw.githubusercontent.com/xiaojing110/openwrt-TD/refs/heads/main/diy.sh
 
-红米AX6000配置：https://raw.githubusercontent.com/xiaojing110/openwrt-TD/refs/heads/dev/hmax6000/.config #开源固件
+闭源固件使用默认的务必使用diy2.sh或者自己按照我模板创建一个
+
+https://raw.githubusercontent.com/xiaojing110/openwrt-TD/refs/heads/main/diy2.sh
 
 待完成功能
 可能会开启ssh在线构建
