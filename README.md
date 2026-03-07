@@ -4,6 +4,7 @@
 在x86目录下上传本地编译的.config文件，确保所需插件等源代码中有，或者修改yml文件配置
 
 请确保在config配置编译通过，本地无法通过，那么actions也无法通过
+也可以使用编译的完成包(一般是config.buildinfo)生成最终包的目录自带
 
 immortalwrt的编译请选择你自己的config配置，默认仓库配置为LEDE固件
 
