@@ -88,7 +88,8 @@ curl -s -o feeds/packages/net/v2ray-geodata/Makefile https://raw.githubuserconte
 # 可选：显示版本信息确认
 grep "GEOIP_VER:=" feeds/packages/net/v2ray-geodata/Makefile || echo "v2ray-geodata Makefile 更新失败"
 
-##以下功能按需打开,需要本地编译过带ofa配置的
+##以下功能按需打开,需要本地编译过带ofa配置的，本地不带的需要在config中配置
+##加在配置文件中 CONFIG_PACKAGE_luci-app-oaf=y
 #应用过滤
 #git clone https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter   
 
