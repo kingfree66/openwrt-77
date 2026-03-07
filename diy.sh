@@ -62,6 +62,15 @@ echo "更新 kernel-6.12内核"
 sed -i 's|LINUX_VERSION-6.12 = .*|LINUX_VERSION-6.12 = .76|' include/kernel-6.12
 sed -i 's|LINUX_KERNEL_HASH-6.12.*|LINUX_KERNEL_HASH-6.12.76 = bbb43e834c46e6bd49a5c28f22e679a937443404e1f653204d4b24929f3ad896|' include/kernel-6.12
 
+#自动识别并修改golang版本
+echo "更新 golang 到 1.26.1"
+sed -i 's/^GO_VERSION_MAJOR_MINOR:=.*/GO_VERSION_MAJOR_MINOR:=1.26/' feeds/packages/lang/golang/golang/Makefile
+sed -i 's/^GO_VERSION_PATCH:=.*/GO_VERSION_PATCH:=1/'           feeds/packages/lang/golang/golang/Makefile
+sed -i "s|^PKG_HASH:=.*|PKG_HASH:=3172293d04b209dc1144698e7ba13f0477f6ba8c5ffd0be66c20fdbc9785dfbb|" feeds/packages/lang/golang/golang/Makefile
+
+# 验证修改结果
+grep -E "GO_VERSION|PKG_HASH" feeds/packages/lang/golang/golang/Makefile
+
 # 修改 linux-firmware Makefile 中的 PKG_VERSION 和 PKG_HASH
 #echo "更新linux-firmware"
 #sed -i 's/PKG_VERSION:=20250509/PKG_VERSION:=20250808/' package/firmware/linux-firmware/Makefile
@@ -79,7 +88,7 @@ curl -s -o feeds/packages/net/v2ray-geodata/Makefile https://raw.githubuserconte
 # 可选：显示版本信息确认
 grep "GEOIP_VER:=" feeds/packages/net/v2ray-geodata/Makefile || echo "v2ray-geodata Makefile 更新失败"
 
-##以下功能按需打开,需要本地编译过带ofa配置的，不要就要修改启用
+##以下功能按需打开,需要本地编译过带ofa配置的
 #应用过滤
 #git clone https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter   
 
