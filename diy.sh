@@ -94,7 +94,7 @@ grep "GEOIP_VER:=" feeds/packages/net/v2ray-geodata/Makefile || echo "v2ray-geod
 #git clone https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
 
 #echo "修改默认 主机名 为 ThatDream"
-#sed -i -E "s/(set system\.@system\[-1\]\.hostname=')[^']+'/\1ThatDream'/" package/base-files/files/bin/config_generate
+sed -i -E "s/(set system\.@system\[-1\]\.hostname=')[^']+'/\1Openwrt-King'/" package/base-files/files/bin/config_generate
 # 可选：显示主机信息确认
 #grep "hostname=" package/base-files/files/bin/config_generate
 
