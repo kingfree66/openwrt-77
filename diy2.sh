@@ -65,13 +65,8 @@ sed -i -E 's|(PKG_HASH:=)[^ ]+|\1 959496928c8a676ec8377f665ff6a19a707bfad693325f
 # 修改 linux-firmware 包中的 PKG_VERSION 和 PKG_HASH
 echo "更新linux-firmware"
 # 自动识别并替换 PKG_VERSION 和 PKG_HASH
-sed -i -E 's/(PKG_VERSION:=)[^ ]+/\1 20260221/' package/firmware/linux-firmware/Makefile
-sed -i -E 's|(PKG_HASH:=)[^ ]+|\1 bd19acc4c1a02548e09d3df67f987fe6e378df735bab138c1d9e917962056d94|' package/firmware/linux-firmware/Makefile
-
-# 修改 linux-firmware Makefile 中的 PKG_VERSION 和 PKG_HASH
-#echo "更新linux-firmware"
-#sed -i 's/PKG_VERSION:=20250509/PKG_VERSION:=20250808/' package/firmware/linux-firmware/Makefile
-#sed -i 's/PKG_HASH:=f2c60d66f226a28130cb5643e6e544d3229673460e127c91ba03f1080cbd703e/PKG_HASH:=c029551b45a15926c9d7a5df1a0b540044064f19157c57fc11d91fd0aade837f/' package/firmware/linux-firmware/Makefile
+sed -i -E 's/(PKG_VERSION:=)[^ ]+/\1 20260309/' package/firmware/linux-firmware/Makefile
+sed -i -E 's|(PKG_HASH:=)[^ ]+|\1 c74cc6f562b58ad5bc6b2b00a61abc29c9e49e06126e7ba34fbca9928e07a96c|' package/firmware/linux-firmware/Makefile
 
 # 覆盖 chinadns-ng Makefile（来自 kenzok8/small，通常版本更新更快，支持预编译二进制）
 echo "覆盖 chinadns-ng Makefile 为 kenzok8/small 版本"
@@ -96,6 +91,30 @@ echo "覆盖 hysteria Makefile 为 kenzok8/small 版本"
 curl -s -o feeds/packages/net/hysteria/Makefile https://raw.githubusercontent.com/kenzok8/small/master/hysteria/Makefile
 # 可选：显示版本确认（2.7.1 是你拉取时的版本，未来可能更新）
 grep "PKG_VERSION:=" feeds/packages/net/hysteria/Makefile || echo "hysteria Makefile 更新失败"
+
+# ------------------ 添加 luci-app-mosdns ------------------
+echo "添加 luci-app-mosdns..."
+
+# 进入 feeds/luci/applications
+cd feeds/luci/applications || { echo "错误：无法进入 feeds/luci/applications"; exit 1; }
+
+# 直接浅克隆到 luci-app-mosdns 目录（最简单方式）
+echo "克隆 xiaojing110/luci-app-mosdns 仓库（浅克隆）..."
+git clone --depth=1 --single-branch --branch main \
+    https://github.com/xiaojing110/luci-app-mosdns.git luci-app-mosdns || {
+    echo "克隆失败，请检查网络或仓库是否可用"; exit 1;
+}
+
+# 可选：显示版本信息，便于确认
+if [ -f "luci-app-mosdns/Makefile" ]; then
+    echo "luci-app-mosdns 添加成功，版本信息："
+    grep -E "PKG_NAME|PKG_VERSION" luci-app-mosdns/Makefile | head -n 4 || echo "未找到版本信息"
+else
+    echo "警告：Makefile 不存在，添加可能失败！"
+fi
+
+cd - >/dev/null  # 返回原来的目录
+echo "luci-app-mosdns 添加流程结束。"
 
 # ------------------ 替换 luci-app-passwall ------------------
 echo "开始替换 luci-app-passwall 为 Openwrt-Passwall 官方版本..."
@@ -143,3 +162,18 @@ fi
 
 cd - >/dev/null  # 返回原来的目录
 echo "passwall 替换流程结束。"
+
+# 关键：更新 feeds 索引 & 安装所有包（包括新加的 mosdns）
+echo "更新 feeds 并安装所有包定义..."
+./scripts/feeds update -a && ./scripts/feeds install -a || {
+    echo "feeds update/install 失败，请检查日志"; exit 1;
+}
+# 可选：显示 Makefile 中的版本信息确认
+if [ -f "feeds/luci/applications/luci-app-mosdns/Makefile" ]; then
+    echo "luci-app-mosdns 已添加，版本信息："
+    grep -E "PKG_NAME|PKG_VERSION" feeds/luci/applications/luci-app-mosdns/Makefile | head -n 4 || echo "未找到版本信息"
+else
+    echo "警告：Makefile 不存在，添加可能有问题！"
+fi
+
+echo "luci-app-mosdns 添加并注册完成！"
