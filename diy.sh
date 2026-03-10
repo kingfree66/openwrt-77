@@ -91,10 +91,10 @@ grep "GEOIP_VER:=" feeds/packages/net/v2ray-geodata/Makefile || echo "v2ray-geod
 ##以下功能按需打开,需要本地编译过带ofa配置的，本地不带的需要在config中配置
 ##加在配置文件中 CONFIG_PACKAGE_luci-app-oaf=y
 #应用过滤
-git clone https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
+# git clone https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
 
 #echo "修改默认 主机名 为 ThatDream"
-sed -i -E "s/(set system\.@system\[-1\]\.hostname=')[^']+'/\1Openwrt-King'/" package/base-files/files/bin/config_generate
+# sed -i -E "s/(set system\.@system\[-1\]\.hostname=')[^']+'/\1Openwrt-King'/" package/base-files/files/bin/config_generate
 # 可选：显示主机信息确认
 #grep "hostname=" package/base-files/files/bin/config_generate
 
