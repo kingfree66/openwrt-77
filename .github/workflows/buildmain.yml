@@ -117,7 +117,6 @@ jobs:
         working-directory: ./${{ env.REAL_DIR }}
         run: |
           sed -i 's/^#src-git qmodem/src-git qmodem/' feeds.conf.default || true
-          echo "src-git mosdns https://github.com/xiaojing110/luci-app-mosdns.git" >> feeds.conf.default || true
 
       - name: 更新并安装 feeds
         working-directory: ./${{ env.REAL_DIR }}
