@@ -225,15 +225,6 @@ jobs:
           find feeds/luci/collections/ -type f -name Makefile -exec \
             sed -i -E 's/(luci-theme-)[a-zA-Z0-9_-]+/\1argon/g' {} \;
 
-      - name: 缓存下载文件和工具链
-        uses: actions/cache@v4
-        with:
-          path: |
-            ${{ env.REAL_DIR }}/dl
-            ${{ env.REAL_DIR }}/staging_dir
-          key: ${{ runner.os }}-build-${{ env.SOURCE }}-${{ hashFiles(format('{0}/.config', env.REAL_DIR)) }}
-          restore-keys: ${{ runner.os }}-build-${{ env.SOURCE }}-
-
       - name: 下载依赖包
         working-directory: ./${{ env.REAL_DIR }}
         run: |
