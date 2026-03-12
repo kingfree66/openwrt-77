@@ -112,6 +112,8 @@ jobs:
           sed -i '/^src-git luci/c\src-git luci https://github.com/coolsnowwolf/luci.git;openwrt-25.12' feeds.conf.default || true
           echo "src-git kenzo https://github.com/kenzok8/openwrt-packages" >> feeds.conf.default || true
           echo "src-git small https://github.com/kenzok8/small" >> feeds.conf.default || true
+          echo "src-git opentomato https://github.com/Leo-Jo-My/luci-theme-opentomato.git" >> feeds.conf.default || true
+          echo "src-git neobird https://github.com/thinktip/luci-theme-neobird.git" >> feeds.conf.default || true
 
       - name: 修改 feeds.conf.default（通用部分：qmodem + mosdns）
         working-directory: ./${{ env.REAL_DIR }}
