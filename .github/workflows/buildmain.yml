@@ -239,71 +239,6 @@ jobs:
         run: |
           make -j$(nproc) V=s || make -j1 V=s
 
-      - name: 收集已选 luci-app 信息（从固件 manifest 读取，最准确反映固件实际包含）
-        working-directory: ./${{ env.REAL_DIR }}
-        run: |
-          echo "尝试生成固件包清单 (make manifest)..."
-          APPS=""
-          
-          make manifest 2>/dev/null | grep -o 'luci-app-[^[:space:]]*' | sort | uniq > /tmp/luci-apps.txt || true
-          
-          if [ -s /tmp/luci-apps.txt ]; then
-            echo "✅ 从 manifest 成功提取 luci-app（固件内真实包含）"
-            while read -r pkg; do
-              APPS="$APPS- ${pkg} (已编译进固件)\n"
-            done < /tmp/luci-apps.txt
-          else
-            echo "manifest 生成失败，回退到 .config 读取"
-            grep '^CONFIG_PACKAGE_luci-app' .config 2>/dev/null | grep '=y' | sed 's/CONFIG_PACKAGE_//' | sed 's/=y//' | sort | uniq > /tmp/luci-apps.txt || true
-            while read -r pkg; do
-              APPS="$APPS- ${pkg} (已启用)\n"
-            done < /tmp/luci-apps.txt
-          fi
-          
-          if [ -z "$APPS" ]; then
-            APPS="未检测到任何 luci-app 插件"
-          fi
-          
-          echo "LUCI_APPS<<EOF" >> $GITHUB_ENV
-          echo -e "$APPS" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
-      - name: 提取目标信息（用于 Release 标题和说明）
-        id: extract_target
-        working-directory: ./${{ env.REAL_DIR }}
-        run: |
-          TARGET_BOARD=$(grep '^CONFIG_TARGET_' .config | grep '=y' | head -1 | sed -n 's/CONFIG_TARGET_\([^=]*\)=y/\1/p' || echo "unknown")
-          TARGET_SUB=$(grep '^CONFIG_TARGET_.*_.*=y' .config | grep -v '^CONFIG_TARGET_BOARD' | head -1 | cut -d_ -f4- | cut -d= -f1 || echo "")
-          if [ -n "$TARGET_SUB" ]; then
-            TARGET_FULL="${TARGET_BOARD}-${TARGET_SUB}"
-          else
-            TARGET_FULL="$TARGET_BOARD"
-          fi
-          TARGET_PROFILE=$(make info 2>/dev/null | grep '^Target Profile' | cut -d: -f2- | xargs || echo "$TARGET_FULL")
-          [ -z "$TARGET_PROFILE" ] && TARGET_PROFILE="$TARGET_FULL"
-          echo "TARGET_PROFILE=$TARGET_PROFILE" >> $GITHUB_ENV
-          echo "TARGET_FULL=$TARGET_FULL" >> $GITHUB_ENV
-
-      - name: 生成固件说明文件
-        working-directory: ./${{ env.REAL_DIR }}
-        run: |
-          TARGET_DIR=$(find bin/targets -mindepth 2 -maxdepth 3 -type d 2>/dev/null | head -n1)
-          [ -z "$TARGET_DIR" ] && mkdir -p "bin/targets/x86/64" && TARGET_DIR="bin/targets/x86/64"
-        
-          cat > "$TARGET_DIR/固件说明.txt" << EOF
-          ==================== 固件信息 ====================
-          固件来源 : ${{ env.SOURCE }}
-          目标设备 : ${{ env.TARGET_PROFILE }} (${{ env.TARGET_FULL }})
-          编译时间 : $(date '+%Y-%m-%d %H:%M:%S %Z') (Asia/Shanghai)
-          后台地址 : http://${{ env.LAN_IP }}
-          主机名    : ${{ env.HOSTNAME_USED }}
-          用户名/密码 : root / password
-          作者/维护者 : ${{ env.BUILD_AUTHOR }}
-          config 来源 : ${{ env.CONFIG_URL || 'config.buildinfo / .config / 远程默认' }}
-          diy 来源 : ${{ env.DIY_URL || '本地 diy.sh（若存在）' || '无' }}
-          ================================================
-          EOF
-
       - name: 打包软件包（排除固件镜像）
         working-directory: ./${{ env.REAL_DIR }}
         run: |
@@ -323,23 +258,6 @@ jobs:
           tag_name: build-${{ env.SOURCE }}-${{ env.TARGET_PROFILE || 'unknown' }}-${{ github.run_number }}
           name: ${{ env.SOURCE }} • ${{ env.TARGET_PROFILE || '通用' }} • ${{ env.HOSTNAME_USED }} • LAN ${{ env.LAN_IP }} • #${{ github.run_number }}
           body: |
-            ### 固件构建信息
-            - **固件来源**： ${{ env.SOURCE }}
-            - **目标设备**： ${{ env.TARGET_PROFILE }} (${{ env.TARGET_FULL }})
-            - **主机名**： ${{ env.HOSTNAME_USED }}
-            - **LAN IP**： ${{ env.LAN_IP }}
-            - **编译时间**： $(date '+%Y-%m-%d %H:%M:%S %Z') (Asia/Shanghai)
-            - **作者**： ${{ env.BUILD_AUTHOR }}
-            - **配置来源**： ${{ env.CONFIG_URL || 'config.buildinfo / 本地 / 远程默认' }}
-            - **diy 脚本**： ${{ env.DIY_URL || '本地 diy.sh（若存在）' || '无' }}
-          
-            ### 已包含主要插件（来自固件 manifest）
-            ${{ env.LUCI_APPS }}
-          
-            **上传内容**：
-            • 固件镜像（img / bin / squashfs / vdi / vmdk / ova 等）
-            • 固件说明.txt
-            • packages-*.zip （仅 ipk/apk 软件包）
           
             **注意**：主机名留空时使用源码默认值；插件列表来自 `make manifest` + `.config` 双保险。
           files: |
