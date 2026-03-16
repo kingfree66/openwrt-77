@@ -59,8 +59,8 @@ sed -i -E 's|(PKG_HASH:=)[^ ]+|\1 959496928c8a676ec8377f665ff6a19a707bfad693325f
 
 #6.12 内核
 echo "更新 kernel-6.12内核"
-sed -i 's|LINUX_VERSION-6.12 = .*|LINUX_VERSION-6.12 = .76|' include/kernel-6.12
-sed -i 's|LINUX_KERNEL_HASH-6.12.*|LINUX_KERNEL_HASH-6.12.76 = bbb43e834c46e6bd49a5c28f22e679a937443404e1f653204d4b24929f3ad896|' include/kernel-6.12
+sed -i 's|LINUX_VERSION-6.12 = .*|LINUX_VERSION-6.12 = .77|' include/kernel-6.12
+sed -i 's|LINUX_KERNEL_HASH-6.12.*|LINUX_KERNEL_HASH-6.12.77 = 358836ebe5caef41e7ae9492e7fbcdf5be6e53ee43c99752aebda81e1b2cff67|' include/kernel-6.12
 
 #自动识别并修改golang版本
 echo "更新 golang 到 1.26.1"
@@ -91,7 +91,7 @@ grep "GEOIP_VER:=" feeds/packages/net/v2ray-geodata/Makefile || echo "v2ray-geod
 ##以下功能按需打开,需要本地编译过带ofa配置的，本地不带的需要在config中配置
 ##加在配置文件中 CONFIG_PACKAGE_luci-app-oaf=y
 #应用过滤
-# git clone https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
+git clone https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
 
 #echo "修改默认 主机名 为 ThatDream"
 sed -i -E "s/(set system\.@system\[-1\]\.hostname=')[^']+'/\1Openwrt-King'/" package/base-files/files/bin/config_generate
