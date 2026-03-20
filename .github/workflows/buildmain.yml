@@ -211,40 +211,13 @@ jobs:
         working-directory: ./${{ env.REAL_DIR }}
         run: |
           make download -j$(nproc) || make download -j1 V=s
+          
       - name: 编译固件
         working-directory: ./${{ env.REAL_DIR }}
         env:
           FORCE_UNSAFE_CONFIGURE: 1
         run: |
           make -j$(nproc) V=s || make -j1 V=s
-      - name: 收集已选 luci-app 信息（从固件 manifest 读取，最准确反映固件实际包含）
-        working-directory: ./${{ env.REAL_DIR }}
-        run: |
-          echo "尝试生成固件包清单 (make manifest)..."
-          APPS=""
-       
-          make manifest 2>/dev/null | grep -o 'luci-app-[^[:space:]]*' | sort | uniq > /tmp/luci-apps.txt || true
-       
-          if [ -s /tmp/luci-apps.txt ]; then
-            echo "✅ 从 manifest 成功提取 luci-app（固件内真实包含）"
-            while read -r pkg; do
-              APPS="$APPS- ${pkg} (已编译进固件)\n"
-            done < /tmp/luci-apps.txt
-          else
-            echo "manifest 生成失败，回退到 .config 读取"
-            grep '^CONFIG_PACKAGE_luci-app' .config 2>/dev/null | grep '=y' | sed 's/CONFIG_PACKAGE_//' | sed 's/=y//' | sort | uniq > /tmp/luci-apps.txt || true
-            while read -r pkg; do
-              APPS="$APPS- ${pkg} (已启用)\n"
-            done < /tmp/luci-apps.txt
-          fi
-       
-          if [ -z "$APPS" ]; then
-            APPS="未检测到任何 luci-app 插件"
-          fi
-       
-          echo "LUCI_APPS<<EOF" >> $GITHUB_ENV
-          echo -e "$APPS" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
       
       - name: 打包软件包（排除固件镜像）
         working-directory: ./${{ env.REAL_DIR }}
@@ -265,3 +238,15 @@ jobs:
           tag_name: build-${{ github.run_number }}
           name: Release #${{ github.run_number }}
           files: path/to/your/firmware.bin
+          files: |
+            ${{ env.REAL_DIR }}/bin/targets/**/*.img
+            ${{ env.REAL_DIR }}/bin/targets/**/*.img.gz
+            ${{ env.REAL_DIR }}/bin/targets/**/*.bin
+            ${{ env.REAL_DIR }}/bin/targets/**/*.squashfs*
+            ${{ env.REAL_DIR }}/bin/targets/**/*.vdi
+            ${{ env.REAL_DIR }}/bin/targets/**/*.vmdk
+            ${{ env.REAL_DIR }}/bin/targets/**/*.ova
+            ${{ env.REAL_DIR }}/bin/targets/**/固件说明.txt
+            ${{ env.REAL_DIR }}/packages-*.zip
+          draft: false
+          prerelease: false
