@@ -198,7 +198,7 @@ jobs:
           fi
           echo "强制使用 Argon 主题"
           find feeds/luci/collections/ -type f -name Makefile -exec \
-            sed -i -E 's/(luci-theme-)[a-zA-Z0-9_-]+/\1argon/g' {} \;
+            sed -i -E 's/(luci-theme-)[a-zA-Z0-9_-]+/\1neobird/g' {} \;
       - name: 缓存下载文件和工具链
         uses: actions/cache@v4
         with:
@@ -211,14 +211,13 @@ jobs:
         working-directory: ./${{ env.REAL_DIR }}
         run: |
           make download -j$(nproc) || make download -j1 V=s
-          
       - name: 编译固件
         working-directory: ./${{ env.REAL_DIR }}
         env:
           FORCE_UNSAFE_CONFIGURE: 1
         run: |
           make -j$(nproc) V=s || make -j1 V=s
-      
+
       - name: 打包软件包（排除固件镜像）
         working-directory: ./${{ env.REAL_DIR }}
         run: |
@@ -231,13 +230,10 @@ jobs:
             -x "targets/*/profiles.json" -x "targets/*/sha256sums" || true
           cd ..
           ls -lh "${ZIP_NAME}" || true
-          
       - name: 发布到 GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: build-${{ github.run_number }}
-          name: Release #${{ github.run_number }}
-          files: path/to/your/firmware.bin
+          tag_name: build-${{ env.SOURCE }}-${{ env.TARGET_PROFILE || 'unknown' }}-${{ github.run_number }}
           files: |
             ${{ env.REAL_DIR }}/bin/targets/**/*.img
             ${{ env.REAL_DIR }}/bin/targets/**/*.img.gz
