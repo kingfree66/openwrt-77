@@ -198,7 +198,7 @@ jobs:
           fi
           echo "强制使用 Argon 主题"
           find feeds/luci/collections/ -type f -name Makefile -exec \
-            sed -i -E 's/(luci-theme-)[a-zA-Z0-9_-]+/\1neobird/g' {} \;
+            sed -i -E 's/(luci-theme-)[a-zA-Z0-9_-]+/\1argon/g' {} \;
       - name: 缓存下载文件和工具链
         uses: actions/cache@v4
         with:
