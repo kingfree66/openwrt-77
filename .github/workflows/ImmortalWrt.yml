@@ -29,7 +29,7 @@ on:
         default: ''
 env:
   TZ: Asia/Shanghai
-  REMOTE_CONFIG_URL: "https://raw.githubusercontent.com/kingfree66/openwrt-77/refs/heads/main/X86/.config"
+  REMOTE_CONFIG_URL: "https://raw.githubusercontent.com/kingfree66/openwrt-77/refs/heads/main/X86/immortalwrt.config"
   LAN_IP: ${{ github.event.inputs.lan_ip || '10.0.0.1' }}
   HOSTNAME: ${{ github.event.inputs.hostname }}
   SOURCE: ${{ github.event.inputs.source || 'lede' }}
